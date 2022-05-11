@@ -1,9 +1,3 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const path = require("path");
-var cors = require("cors");
-
-//const apiRouter = require("./routes/api");
 const db = [
   {
     id: 1,
@@ -89,10 +83,15 @@ const db = [
       "https://robohash.org/temporibusvoluptasmagni.png?size=50x50&;set=set1",
   },
 ];
+
+const express = require("express");
+const bodyParser = require("body-parser");
+const path = require("path");
+var cors = require("cors");
+
 const app = express();
 
 const PORT = process.env.PORT || 3001;
-//require('./db');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -101,31 +100,38 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.resolve(__dirname, "client/build")));
 
 app.use(cors({ optionsSuccessStatus: 200 }));
-/*app.get("/", (req, res) => {
-  console.log("Hola Mundo");
-});
-*/
-app.get("/customers", (req, res) => {
+
+app.get("/api/customers", (req, res) => {
   res.json(db);
 });
 
-app.get("/customers", async (req, res) => {
-  const characters = await db.findAll({});
-  res.json(characters);
-  //res.send('Entra correctamente a Characters');
+app.get("/api/customers/:customerId", (req, res) => {
+  let findCustomer = db.find(
+    (customer) => customer.id == req.params.customerId
+  );
+  res.json(findCustomer);
 });
+
+app.post("/api/customers/create", (req, res) => {
+  let newObj = req.body;
+  let highestId = db.slice().sort((a, b) => a.id - b.id)[db.length - 1].id;
+
+  newObj["id"] = highestId + 1;
+  db.push(newObj);
+});
+
+app.delete("/api/customers/delete/:customerId", (req, res) => {
+  for (let i = 0; i < db.length; i++) {
+    if (db[i].id == req.params.customerId) {
+      db.splice(i, 1);
+      i--;
+    }
+  }
+  res.send("DELETE REQUEST CALLED");
+});
+
 app.get("*", (req, res) => {
-  console.log(
-    "Path none" + path.resolve(__dirname, "client/build", "index.html")
-  );
-  console.log(
-    "Path  /" + path.resolve(__dirname, "/client/build", "index.html")
-  );
-  console.log(
-    "Path ./" + path.resolve(__dirname, "./client/build", "index.html")
-  );
-  res.sendFile(path.resolve(__dirname, "/client/build", "index.html"));
-  res.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
+  console.log("catching all");
   res.sendFile(path.resolve(__dirname, "client/build", "index.html"));
 });
 

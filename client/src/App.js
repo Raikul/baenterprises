@@ -1,34 +1,20 @@
 import React, { useState, useEffect } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import Customers from "./components/Customers";
+import logo from "./imgs/logo.svg";
+import "./stylesheets/App.css";
 
 export default function App() {
-  const [customers, setCustomers] = useState([]);
-
-  const fetchCustomers = async () => {
-    const response = await fetch("/customers");
-    const data = await response.json();
-    setCustomers(data);
-  };
-
-  useEffect(() => {
-    fetchCustomers();
-  }, []);
-
-  const renderedResults = customers.map((customer) => {
-    return (
-      <li key={customer.id}>
-        {customer.id} {customer.first_name} <img src={customer.image} />
-      </li>
-    );
-  });
-
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <ul>{renderedResults}</ul>
+        <div>
+          Bienvenido a la API de BA Enterprises. Las rutas de las vistas son:
+          <ul>
+            <li>/customers</li>
+            <li>/customers/:id</li>
+            <li>/customers/create</li>
+          </ul>
+        </div>
       </header>
     </div>
   );
