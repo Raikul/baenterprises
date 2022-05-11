@@ -118,6 +118,7 @@ app.post("/api/customers/create", (req, res) => {
 
   newObj["id"] = highestId + 1;
   db.push(newObj);
+  res.send("CUSTOMER CREATED");
 });
 
 app.delete("/api/customers/delete/:customerId", (req, res) => {
